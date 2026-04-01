@@ -1,0 +1,16 @@
+package com.example.reeltime
+
+import androidx.room.*
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface MovieDao {
+    @Query("SELECT * FROM movies")
+    fun getAllMovies(): Flow<List<Movie>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(movie: Movie)
+
+    @Delete
+    suspend fun delete(movie: Movie)
+}
