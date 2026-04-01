@@ -1,8 +1,13 @@
-package com.example.reeltime
+package com.example.reeltime.ui
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.reeltime.model.Movie
+import com.example.reeltime.MovieDatabase
+import com.example.reeltime.MovieRepository
 import kotlinx.coroutines.launch
 
 class MovieViewModel(application: Application) : AndroidViewModel(application) {
@@ -10,7 +15,7 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
     val movies: LiveData<List<Movie>>
 
     init {
-        val dao = MovieDatabase.getDatabase(application).movieDao()
+        val dao = MovieDatabase.Companion.getDatabase(application).movieDao()
         repo = MovieRepository(dao)
         movies = repo.movies.asLiveData()
     }

@@ -1,6 +1,7 @@
 package com.example.reeltime
 
 import androidx.room.*
+import com.example.reeltime.model.Movie
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -1,5 +1,6 @@
 package com.example.reeltime
 
+import com.example.reeltime.model.Movie
 import kotlinx.coroutines.flow.Flow
 
 class MovieRepository(private val dao: MovieDao) {
