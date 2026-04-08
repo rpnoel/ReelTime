@@ -1,5 +1,6 @@
 package com.example.reeltime.api
 
+import com.example.reeltime.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -14,6 +15,13 @@ object TmdbClient {
     }
 
     private val okHttp = OkHttpClient.Builder()
+        .addInterceptor { chain ->
+            val request = chain.request().newBuilder()
+                .addHeader("Authorization", "Bearer ${BuildConfig.TMDB_BEARER_TOKEN}")
+                .addHeader("accept", "application/json")
+                .build()
+            chain.proceed(request)
+        }
         .addInterceptor(logging)
         .build()
 

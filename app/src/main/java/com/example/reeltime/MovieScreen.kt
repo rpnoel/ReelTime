@@ -86,14 +86,14 @@ fun MovieScreen(viewModel: MovieViewModel) {
                         }
                         
                         Column(modifier = Modifier.padding(start = 12.dp)) {
-                            Text(text = movie.title + " (${(movie.release_date)?.substring(0, 4)})", style = MaterialTheme.typography.titleMedium)
+                            Text(text = movie.title + " (${(movie.release_date)?.take(4)})", style = MaterialTheme.typography.titleMedium)
                             Text(
                                 text = "$rating%",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = getRatingColor(rating),
                                 fontWeight = FontWeight.Bold
                             )
-                            Text(text = (movie.release_date)?.substring(0, 4) ?: "No release date", style = MaterialTheme.typography.bodySmall)
+                            Text(text = (movie.release_date)?.take(4) ?: "No release date", style = MaterialTheme.typography.bodySmall)
                         }
                     }
                     HorizontalDivider()

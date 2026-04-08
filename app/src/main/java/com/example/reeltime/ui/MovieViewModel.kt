@@ -57,9 +57,9 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
             Movie(
                 tmdbId = dto.id,
                 title = dto.title,
-                overview = dto.overview ?: "",
+                overview = dto.overview,
                 posterPath = dto.poster_path,
-                releaseDate = (dto.release_date)?.substring(0, 4),
+                releaseDate = (dto.release_date)?.take(4),
                 voteAverage = (dto.vote_average * 10).roundToInt()
             )
         )
