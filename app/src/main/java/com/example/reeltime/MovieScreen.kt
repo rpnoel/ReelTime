@@ -3,6 +3,7 @@ package com.example.reeltime
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -10,8 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import androidx.compose.ui.Alignment
+import com.example.reeltime.model.Movie
 import com.example.reeltime.ui.MovieViewModel
 import kotlin.math.roundToInt
 import com.example.reeltime.api.TmdbClient
@@ -26,6 +30,8 @@ fun MovieScreen(viewModel: MovieViewModel) {
 
     var input by remember { mutableStateOf("") }
     var showSaved by remember { mutableStateOf(false) }
+    var editingMovie by remember { mutableStateOf<Movie?>(null) }
+
 
     Column(modifier = Modifier.padding(16.dp)) {
         Spacer(Modifier.height(32.dp))
@@ -107,7 +113,7 @@ fun MovieScreen(viewModel: MovieViewModel) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { viewModel.deleteMovie(movie) }
+                            .clickable { editingMovie = movie }
                             .padding(8.dp)
                     ) {
                         movie.posterPath?.let { path ->
@@ -116,6 +122,7 @@ fun MovieScreen(viewModel: MovieViewModel) {
                                 contentDescription = "Poster of ${movie.title}",
                                 modifier = Modifier
                                     .width(80.dp)
+                                    .clickable { viewModel.deleteMovie(movie) }
                                     .height(120.dp),
                                 contentScale = ContentScale.Crop
                             )
@@ -123,20 +130,61 @@ fun MovieScreen(viewModel: MovieViewModel) {
 
                         Column(modifier = Modifier.padding(start = 12.dp)) {
                             Text(text = movie.title, style = MaterialTheme.typography.titleMedium)
+                            if(movie.userRating != null){
                             Text(
-                                text = "Rating: ${movie.voteAverage}%", 
+                                text = "${movie.userRating}%",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = getRatingColor(movie.voteAverage)
+                                color = getRatingColor(movie.userRating)
                             )
+                            } else {
+                                Text(
+                                    text = "Rate this movie!",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
                             Text(text = movie.releaseDate ?: "No release date", style = MaterialTheme.typography.bodySmall)
                             Text(
-                                text = "Click to remove", 
+                                text = "Click poster to remove",
                                 style = MaterialTheme.typography.labelSmall, 
                                 color = MaterialTheme.colorScheme.secondary
                             )
                         }
                     }
                     HorizontalDivider()
+                }
+            }
+            editingMovie?.let { movie ->
+                var rating by remember(movie.id) { mutableStateOf(movie.userRating?.toString() ?: "") }
+
+                Column(modifier = Modifier.padding(8.dp)) {
+                    OutlinedTextField(
+                        value = rating,
+                        onValueChange = { newValue ->
+                            if (newValue.all { it.isDigit() }) {
+                                rating = newValue
+                            }
+                        },
+                        label = { Text("Enter Rating for ${movie.title}") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Button(
+                            onClick = {
+                                val ratingInt = rating.toIntOrNull()
+                                val updatedMovie = movie.copy(userRating = ratingInt)
+                                viewModel.updateMovie(updatedMovie)
+                                editingMovie = null
+                            }
+                        ) {
+                            Text("Save")
+                        }
+                        TextButton(onClick = { editingMovie = null }) {
+                            Text("Cancel")
+                        }
+                    }
                 }
             }
         }

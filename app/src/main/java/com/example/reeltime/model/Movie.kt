@@ -11,5 +11,6 @@ data class Movie(
     val overview: String,
     val posterPath: String?,
     val releaseDate: String?,
-    val voteAverage: Int
+    val voteAverage: Int,
+    val userRating : Int?
 )

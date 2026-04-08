@@ -60,7 +60,8 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
                 overview = dto.overview,
                 posterPath = dto.poster_path,
                 releaseDate = (dto.release_date)?.take(4),
-                voteAverage = (dto.vote_average * 10).roundToInt()
+                voteAverage = (dto.vote_average * 10).roundToInt(),
+                userRating = null
             )
         )
     }
@@ -68,4 +69,9 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
     fun deleteMovie(movie: Movie) = viewModelScope.launch {
         repo.deleteMovie(movie)
     }
+
+    fun updateMovie(movie: Movie) = viewModelScope.launch {
+        repo.updateMovie(movie)
+    }
+
 }

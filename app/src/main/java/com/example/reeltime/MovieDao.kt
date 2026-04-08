@@ -14,4 +14,9 @@ interface MovieDao {
 
     @Delete
     suspend fun delete(movie: Movie)
+
+    @Update
+    suspend fun update(movie: Movie)
 }
+
+

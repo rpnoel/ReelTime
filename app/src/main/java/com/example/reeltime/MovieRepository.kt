@@ -8,4 +8,7 @@ class MovieRepository(private val dao: MovieDao) {
 
     suspend fun addMovie(movie: Movie) = dao.insert(movie)
     suspend fun deleteMovie(movie: Movie) = dao.delete(movie)
+
+    suspend fun updateMovie(movie: Movie) = dao.update(movie)
+
 }

@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.reeltime.model.Movie
 
-@Database(entities = [Movie::class], version = 3)
+@Database(entities = [Movie::class], version = 4)
 abstract class MovieDatabase : RoomDatabase() {
     abstract fun movieDao(): MovieDao
 
