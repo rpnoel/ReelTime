@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.reeltime.ui.MovieViewModel
 import kotlin.math.roundToInt
+import com.example.reeltime.api.TmdbClient
+
 
 @Composable
 fun MovieScreen(viewModel: MovieViewModel) {

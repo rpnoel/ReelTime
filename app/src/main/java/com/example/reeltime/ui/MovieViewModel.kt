@@ -6,11 +6,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.reeltime.BuildConfig
 import com.example.reeltime.MovieDatabase
 import com.example.reeltime.MovieRepository
-import com.example.reeltime.TmdbClient
-import com.example.reeltime.TmdbMovieDto
+import com.example.reeltime.api.TmdbClient
+import com.example.reeltime.api.TmdbMovieDto
 import com.example.reeltime.model.Movie
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
