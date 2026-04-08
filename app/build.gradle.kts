@@ -1,9 +1,21 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
 }
+
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        load(FileInputStream(localPropertiesFile))
+    }
+}
+// Support both property names for convenience
+val tmdbApiKey = localProperties.getProperty("your_api_key_here") ?: localProperties.getProperty("tmdb.api.key") ?: ""
 
 android {
     namespace = "com.example.reeltime"
@@ -17,6 +29,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        buildConfigField("String", "apiKey", "\"$tmdbApiKey\"")
+
+        val tmdbToken = localProperties.getProperty("TMDB_BEARER_TOKEN") ?: ""
+        buildConfigField("String", "TMDB_BEARER_TOKEN", "\"$tmdbToken\"")
     }
 
     buildTypes {
@@ -37,6 +54,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -51,8 +69,13 @@ dependencies {
     implementation("app.moviebase:tmdb-api:1.7.3")
 
     // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+
+    // Coil for image loading
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
