@@ -1,6 +1,7 @@
 package com.example.reeltime
 
 import androidx.room.*
+import com.example.reeltime.model.Movie
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -13,4 +14,12 @@ interface MovieDao {
 
     @Delete
     suspend fun delete(movie: Movie)
+
+    @Update
+    suspend fun update(movie: Movie)
+
+    @Query("SELECT * FROM movies WHERE tmdbId = :tmdbId LIMIT 1")
+    suspend fun getMovieByTmdbId(tmdbId: Int): Movie?
 }
+
+

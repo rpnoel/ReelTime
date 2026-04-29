@@ -1,9 +1,22 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
 }
+
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        load(FileInputStream(localPropertiesFile))
+    }
+}
+// Support both property names for convenience
+val tmdbApiKey = localProperties.getProperty("your_api_key_here") ?: localProperties.getProperty("tmdb.api.key") ?: ""
+val geminiApiKey = localProperties.getProperty("gemini.api.key") ?: ""
 
 android {
     namespace = "com.example.reeltime"
@@ -17,6 +30,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
+        buildConfigField("String", "TMDB_API_KEY", "\"$tmdbApiKey\"")
+
+        val tmdbToken = localProperties.getProperty("TMDB_BEARER_TOKEN") ?: ""
+        buildConfigField("String", "TMDB_BEARER_TOKEN", "\"$tmdbToken\"")
     }
 
     buildTypes {
@@ -35,16 +54,57 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    configurations.all {
+        resolutionStrategy {
+            force("io.ktor:ktor-client-core:2.3.12")
+            force("io.ktor:ktor-client-okhttp:2.3.12")
+            force("io.ktor:ktor-client-android:2.3.12")
+            force("io.ktor:ktor-client-content-negotiation:2.3.12")
+            force("io.ktor:ktor-client-logging:2.3.12")
+            force("io.ktor:ktor-client-auth:2.3.12")
+            force("io.ktor:ktor-client-encoding:2.3.12")
+            force("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
+        }
+    }
+
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
+    //Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.navigation.compose)
+    implementation(libs.generativeai)
+
+    // Ktor - specifically needed by Generative AI SDK to avoid NoClassDefFoundError: HttpTimeout
+    implementation("io.ktor:ktor-client-core:2.3.12")
+    implementation("io.ktor:ktor-client-okhttp:2.3.12")
+    implementation("io.ktor:ktor-client-android:2.3.12")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.12")
+    implementation("io.ktor:ktor-client-logging:2.3.12")
+    implementation("io.ktor:ktor-client-auth:2.3.12")
+    implementation("io.ktor:ktor-client-encoding:2.3.12")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
+
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    //TMDb
+    implementation(libs.tmdb.api)
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+
+    // Coil for image loading
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
