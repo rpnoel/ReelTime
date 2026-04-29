@@ -1,5 +1,6 @@
 package com.example.reeltime
 
+import com.example.reeltime.model.Movie
 import kotlinx.coroutines.flow.Flow
 
 class MovieRepository(private val dao: MovieDao) {
@@ -7,4 +8,7 @@ class MovieRepository(private val dao: MovieDao) {
 
     suspend fun addMovie(movie: Movie) = dao.insert(movie)
     suspend fun deleteMovie(movie: Movie) = dao.delete(movie)
+
+    suspend fun updateMovie(movie: Movie) = dao.update(movie)
+
 }
