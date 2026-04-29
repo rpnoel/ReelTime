@@ -8,7 +8,7 @@ interface TmdbApiService {
     suspend fun searchMovies(
         @Query("query") query: String,
         @Query("language") language: String = "en-US",
-        @Query("include_adult") includeAdult: Boolean = false,
+        @Query("include_adult") includeAdult: Boolean = true,
         @Query("page") page: Int = 1
     ): TmdbSearchResponse
 }

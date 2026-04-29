@@ -17,6 +17,9 @@ interface MovieDao {
 
     @Update
     suspend fun update(movie: Movie)
+
+    @Query("SELECT * FROM movies WHERE tmdbId = :tmdbId LIMIT 1")
+    suspend fun getMovieByTmdbId(tmdbId: Int): Movie?
 }
 
 
